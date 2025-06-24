@@ -33,7 +33,7 @@ async function carregarDados() {
             ulFaixas.appendChild(li);
         }
         else {
-            faixas.forEach(musica => {
+            faixas.forEach((musica) => {
                 const li = document.createElement('li');
                 li.textContent = musica.nome_musica + ' ';
                 const button = document.createElement('button');
@@ -83,7 +83,7 @@ async function carregarDados() {
             ulAlbuns.appendChild(li);
         }
         else {
-            albuns.forEach(album => {
+            albuns.forEach((album) => {
                 const li = document.createElement('li');
                 li.textContent = album.nm_album;
                 ulAlbuns.appendChild(li);
@@ -115,7 +115,7 @@ async function carregarDados() {
             ulPerfis.appendChild(li);
         }
         else {
-            perfis.forEach(usuario => {
+            perfis.forEach((usuario) => {
                 const li = document.createElement('li');
                 li.textContent = usuario.nome_usuario;
                 ulPerfis.appendChild(li);
@@ -165,7 +165,6 @@ async function carregarPlaylist(cd_usuario) {
 }
 async function adicionarMusicaPlaylist(cd_usuario, cd_musica) {
     try {
-
         const response = await fetch('/api/playlist-musica', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -219,19 +218,14 @@ function tocarMusica(index) {
     }
     const player = document.getElementById('audioPlayer');
     const titulo = document.getElementById('tituloMusica');
+    const albumCover = document.getElementById('albumCover');
     if (!player || !titulo || !albumCover)
         return;
     player.pause();
     player.src = musica.arquivo;
     player.load();
     titulo.textContent = musica.nome_musica;
-    if (musica.foto_album) {
-        albumCover.src = musica.foto_album;
-    }
-    else {
-        console.warn('foto_album não está definida para esta música');
-        albumCover.src = 'caminho/para/imagem_padrao.jpg'; // opcional
-    }
+    albumCover.src = musica.foto_album || 'caminho/para/imagem_padrao.jpg';
     player.onloadedmetadata = () => {
         player.play().catch(err => console.error('Erro ao reproduzir música:', err));
     };
@@ -273,7 +267,6 @@ async function carregarPerfilUsuario() {
         console.error('Erro ao carregar perfil do usuário:', error instanceof Error ? error.message : error);
     }
 }
-
 document.addEventListener('DOMContentLoaded', async () => {
     cdUsuario = obterCdUsuarioDaURL();
     if (!cdUsuario) {
@@ -310,25 +303,21 @@ formSQL?.addEventListener('submit', async (e) => {
     const nomeView = matchView?.[1];
     try {
         let data;
+        let res;
         if (nomeView && viewsPermitidas.has(nomeView)) {
-            const res = await fetch(`/api/view/${nomeView}`);
-            data = await res.json();
-            if (!res.ok) {
-                resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
-                return;
-            }
+            res = await fetch(`/api/view/${nomeView}`);
         }
         else {
-            const res = await fetch('/api/execute-sql', {
+            res = await fetch('/api/execute-sql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: comandoSQL }),
             });
-            data = await res.json();
-            if (!res.ok) {
-                resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
-                return;
-            }
+        }
+        data = await res.json();
+        if (!res.ok) {
+            resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
+            return;
         }
         if (Array.isArray(data)) {
             if (data.length > 0) {
@@ -347,13 +336,15 @@ formSQL?.addEventListener('submit', async (e) => {
                         .join('<br>');
                     ul.appendChild(li);
                 });
-                if (typeof carregarDados === 'function') {
+                if (typeof carregarDados === 'function')
                     carregarDados();
-                }
             }
             else {
-                resultadoDiv.textContent = 'Nenhum resultado encontrado.';
+                resultadoDiv.textContent = 'Comando executado com sucesso.';
             }
+        }
+        else if (typeof data === 'object' && data.success) {
+            resultadoDiv.textContent = `Comando executado com sucesso. ${data.rowsAffected ? `(${data.rowsAffected} linhas afetadas)` : ''}`;
         }
         else {
             resultadoDiv.textContent = 'Comando executado com sucesso.';
