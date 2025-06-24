@@ -22,6 +22,7 @@ export class Server {
 
     private middlewares() {
         this.app.use('/static/imagens', express.static('public/images/perfil'));
+        this.app.use('/static/music', express.static('public/music'));
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.static(path.join(__dirname, "../../public")));

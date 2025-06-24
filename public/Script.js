@@ -296,7 +296,6 @@ formSQL?.addEventListener('submit', async (e) => {
         resultadoDiv.textContent = 'Digite um comando SQL.';
         return;
     }
-    // Limpa conteúdo anterior e cria a <ul> para resultados
     resultadoDiv.innerHTML = '';
     const ul = document.createElement('ul');
     ul.className = 'resultado-lista';

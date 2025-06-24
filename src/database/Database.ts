@@ -6,10 +6,10 @@ export default class Database{
 
     private constructor(){
         this.pool = new Pool({
-            user: "postgres",
+            user: process.env.DB_USER,
             host: process.env.DB_HOST,
-            database: "bd_projeto2",
-            password:"1234",
+            database: process.env.DB_NAME,
+            password: process.env.DB_PASSWORD,
             port: Number(process.env.DB_PORT)
         })
     }

@@ -273,49 +273,56 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 const formSQL = document.getElementById('formSQL') as HTMLFormElement | null;
+
 formSQL?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const input = document.getElementById('sqlInput') as HTMLInputElement | null;
     const resultadoDiv = document.querySelector('.resultBusca') as HTMLElement | null;
     if (!input || !resultadoDiv) return;
+
     const comandoSQL = input.value.trim();
     if (!comandoSQL) {
         resultadoDiv.textContent = 'Digite um comando SQL.';
         return;
     }
+
     resultadoDiv.innerHTML = '';
     const ul = document.createElement('ul');
     ul.className = 'resultado-lista';
     resultadoDiv.appendChild(ul);
+
     const viewsPermitidas = new Set([
         'vw_musicas_completo',
         'vw_musicas_mais_adicionadas',
         'vw_musicas_sem_album',
         'vw_top5_artistas',
     ]);
+
     const matchView = comandoSQL.match(/^SELECT\s+\*\s+FROM\s+(vw_\w+);?$/i);
     const nomeView = matchView?.[1];
+
     try {
         let data: any;
+        let res: Response;
+
         if (nomeView && viewsPermitidas.has(nomeView)) {
-            const res = await fetch(`/api/view/${nomeView}`);
-            data = await res.json();
-            if (!res.ok) {
-                resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
-                return;
-            }
+            res = await fetch(`/api/view/${nomeView}`);
         } else {
-            const res = await fetch('/api/execute-sql', {
+            res = await fetch('/api/execute-sql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: comandoSQL }),
             });
-            data = await res.json();
-            if (!res.ok) {
-                resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
-                return;
-            }
         }
+
+        data = await res.json();
+
+        if (!res.ok) {
+            resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
+            return;
+        }
+
         if (Array.isArray(data)) {
             if (data.length > 0) {
                 data.forEach((item) => {
@@ -332,12 +339,13 @@ formSQL?.addEventListener('submit', async (e) => {
                         .join('<br>');
                     ul.appendChild(li);
                 });
-                if (typeof carregarDados === 'function') {
-                    carregarDados();
-                }
+
+                if (typeof carregarDados === 'function') carregarDados();
             } else {
-                resultadoDiv.textContent = 'Nenhum resultado encontrado.';
+                resultadoDiv.textContent = 'Comando executado com sucesso.';
             }
+        } else if (typeof data === 'object' && data.success) {
+            resultadoDiv.textContent = `Comando executado com sucesso. ${data.rowsAffected ? `(${data.rowsAffected} linhas afetadas)` : ''}`;
         } else {
             resultadoDiv.textContent = 'Comando executado com sucesso.';
         }
@@ -345,5 +353,4 @@ formSQL?.addEventListener('submit', async (e) => {
         resultadoDiv.textContent = `Erro ao executar comando: ${error.message}`;
     }
 });
-
 export {};

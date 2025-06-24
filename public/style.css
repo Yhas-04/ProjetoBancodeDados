@@ -20,7 +20,6 @@ body{
     background-repeat: no-repeat;
     background-attachment: fixed;
     box-sizing: border-box;
-    /* Importante: */
     z-index: 1;
     overflow: hidden;
 

@@ -303,25 +303,21 @@ formSQL?.addEventListener('submit', async (e) => {
     const nomeView = matchView?.[1];
     try {
         let data;
+        let res;
         if (nomeView && viewsPermitidas.has(nomeView)) {
-            const res = await fetch(`/api/view/${nomeView}`);
-            data = await res.json();
-            if (!res.ok) {
-                resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
-                return;
-            }
+            res = await fetch(`/api/view/${nomeView}`);
         }
         else {
-            const res = await fetch('/api/execute-sql', {
+            res = await fetch('/api/execute-sql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: comandoSQL }),
             });
-            data = await res.json();
-            if (!res.ok) {
-                resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
-                return;
-            }
+        }
+        data = await res.json();
+        if (!res.ok) {
+            resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
+            return;
         }
         if (Array.isArray(data)) {
             if (data.length > 0) {
@@ -340,13 +336,15 @@ formSQL?.addEventListener('submit', async (e) => {
                         .join('<br>');
                     ul.appendChild(li);
                 });
-                if (typeof carregarDados === 'function') {
+                if (typeof carregarDados === 'function')
                     carregarDados();
-                }
             }
             else {
-                resultadoDiv.textContent = 'Nenhum resultado encontrado.';
+                resultadoDiv.textContent = 'Comando executado com sucesso.';
             }
+        }
+        else if (typeof data === 'object' && data.success) {
+            resultadoDiv.textContent = `Comando executado com sucesso. ${data.rowsAffected ? `(${data.rowsAffected} linhas afetadas)` : ''}`;
         }
         else {
             resultadoDiv.textContent = 'Comando executado com sucesso.';
