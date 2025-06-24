@@ -5,12 +5,12 @@ html, main {
 }
 
 body{
-    margin: 0; /* remove margens padrão */
+    margin: 0;
     overflow-x: hidden;
 }
 
 .main {
-    position: relative; /* Necessário para o ::after posicionar relativo ao .main */
+    position: relative;
     display: flex;
     min-height: 100vh;
     width: 100vw;
@@ -22,7 +22,7 @@ body{
     box-sizing: border-box;
     /* Importante: */
     z-index: 1;
-    overflow: hidden; /* Garante overlay dentro */
+    overflow: hidden;
 
 }
 .main > * {
@@ -33,9 +33,9 @@ body{
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.9); /* cor e transparência */
+    background: rgba(0,0,0,0.9);
     pointer-events: none;
-    z-index: 0; /* Overlay fica ATRÁS do conteúdo da .main */
+    z-index: 0;
 }
 
 .pagina{
@@ -110,26 +110,26 @@ body{
 
     border: 1vh solid #222222;
 
-    overflow: auto;              /* Permite rolagem caso o conteúdo ultrapasse os limites */
-    box-sizing: border-box;      /* Inclui padding e borda no cálculo de tamanho */
-    padding: 1vh;                /* Pequeno espaçamento interno */
-    word-wrap: break-word;       /* Quebra palavras longas */
-    white-space: normal;         /* Permite quebra de linha */
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 1vh;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .resultBusca ul {
     padding-left: 0;
     margin: 0;
-    width: 100%;                 /* Faz a lista ocupar toda a largura do container */
+    width: 100%;
 }
 
 .resultBusca li {
     border: 0.5vh solid #222222;
     list-style-type: none;
     margin-bottom: 1vh;
-    word-wrap: break-word;       /* Quebra palavras longas */
+    word-wrap: break-word;
     white-space: normal;
-    max-width: 100%;             /* Não ultrapassa o container */
+    max-width: 100%;
     border-bottom: 1px solid #ddd;
     padding-bottom: 1vh;
     font-size: 3vh;
@@ -156,8 +156,8 @@ body{
     margin-top: 3vh;
     border-radius: 2vh;
     width: 35vh;
-    background-color: #444;  /* cor mais escura e neutra */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* sombra para profundidade */
+    background-color: #444;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     outline: none;
 }
 

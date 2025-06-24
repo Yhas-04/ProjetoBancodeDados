@@ -14,12 +14,11 @@ export class Server {
         this.routes();
     }
     middlewares() {
-        this.app.use(cors()); // Permite CORS - necessário para frontend local em porta diferente
-        this.app.use(express.json()); // Para aceitar JSON no corpo das requisições
+        this.app.use(cors());
+        this.app.use(express.json());
         this.app.use(express.static(path.join(__dirname, "../../public")));
     }
     routes() {
-        // Endpoint para buscar todas as músicas
         this.app.get('/api/musica', async (req, res) => {
             console.log('GET /api/musica foi chamado');
             try {
@@ -31,7 +30,6 @@ export class Server {
                 res.status(500).json({ error: 'Erro ao buscar músicas' });
             }
         });
-        // Endpoint para inserir uma música
         this.app.post('/api/musica', async (req, res) => {
             const { cd_musica, nome_musica, cd_album, cd_artista } = req.body;
             try {
@@ -43,7 +41,6 @@ export class Server {
                 res.status(500).json({ error: 'Erro ao adicionar música' });
             }
         });
-        // Endpoint para buscar todos os álbuns
         this.app.get('/api/album', async (req, res) => {
             console.log('GET /api/album foi chamado');
             try {
@@ -55,12 +52,10 @@ export class Server {
                 res.status(500).json({ error: 'Erro ao buscar álbuns' });
             }
         });
-        // Endpoint para buscar todos os usuários
         this.app.get('/api/usuario', async (req, res) => {
             console.log('GET /api/usuario foi chamado');
             try {
                 const { rows } = await this.db.query('SELECT * FROM usuario');
-                // Para garantir o formato correto, podemos mapear os campos importantes aqui
                 const usuariosFormatados = rows.map(user => ({
                     cd_usuario: user.cd_usuario,
                     nome_usuario: user.nome_usuario,
@@ -73,7 +68,6 @@ export class Server {
                 res.status(500).json({ error: 'Erro ao buscar usuários' });
             }
         });
-        // Endpoint para buscar usuário específico pelo id
         this.app.get('/api/usuario/:id', async (req, res) => {
             const id = req.params.id;
             try {
@@ -93,7 +87,6 @@ export class Server {
                 res.status(500).json({ error: 'Erro ao buscar usuário' });
             }
         });
-        // Endpoint para executar comandos SQL arbitrários (cuidado com segurança!)
         this.app.post('/api/execute-sql', async (req, res) => {
             const { query } = req.body;
             if (!query || typeof query !== 'string') {
@@ -114,17 +107,14 @@ export class Server {
                 return res.status(400).json({ error: 'Parâmetros cd_usuario e cd_musica são obrigatórios.' });
             }
             try {
-                // Busca a playlist fixa do usuário
                 const playlistResult = await this.db.query('SELECT cd_playlist FROM playlist WHERE cd_usuario = $1', [cd_usuario]);
                 if (playlistResult.rows.length === 0) {
                     return res.status(404).json({ error: 'Playlist do usuário não encontrada.' });
                 }
                 const cd_playlist = playlistResult.rows[0].cd_playlist;
-                // Busca a maior ordem atual
                 const ordemResult = await this.db.query('SELECT COALESCE(MAX(ordem), -1) AS max_ordem FROM playlist_musica WHERE cd_playlist = $1', [cd_playlist]);
                 const maxOrdem = ordemResult.rows[0].max_ordem;
                 const novaOrdem = maxOrdem + 1;
-                // Insere a música com a ordem correta
                 await this.db.query('INSERT INTO playlist_musica (cd_playlist, cd_musica, ordem) VALUES ($1, $2, $3)', [cd_playlist, cd_musica, novaOrdem]);
                 return res.status(201).json({ message: 'Música adicionada à playlist com sucesso.' });
             }
@@ -136,13 +126,11 @@ export class Server {
         this.app.delete('/api/playlist/:cd_usuario', async (req, res) => {
             const cd_usuario = req.params.cd_usuario;
             try {
-                // Obtém a playlist do usuário
                 const result = await this.db.query('SELECT cd_playlist FROM playlist WHERE cd_usuario = $1', [cd_usuario]);
                 if (result.rows.length === 0) {
                     return res.status(404).json({ error: 'Playlist não encontrada para este usuário.' });
                 }
                 const cd_playlist = result.rows[0].cd_playlist;
-                // Deleta todas as músicas da playlist
                 await this.db.query('DELETE FROM playlist_musica WHERE cd_playlist = $1', [cd_playlist]);
                 return res.status(200).json({ message: 'Playlist limpa com sucesso.' });
             }

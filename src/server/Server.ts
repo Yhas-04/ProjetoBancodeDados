@@ -123,7 +123,6 @@ export class Server {
             }
 
             try {
-                // Busca a playlist fixa do usuário
                 const playlistResult = await this.db.query(
                     'SELECT cd_playlist FROM playlist WHERE cd_usuario = $1',
                     [cd_usuario]
@@ -135,7 +134,6 @@ export class Server {
 
                 const cd_playlist = playlistResult.rows[0].cd_playlist;
 
-                // Busca a maior ordem atual
                 const ordemResult = await this.db.query(
                     'SELECT COALESCE(MAX(ordem), -1) AS max_ordem FROM playlist_musica WHERE cd_playlist = $1',
                     [cd_playlist]
@@ -144,7 +142,7 @@ export class Server {
                 const maxOrdem = ordemResult.rows[0].max_ordem;
                 const novaOrdem = maxOrdem + 1;
 
-                // Insere a música com a ordem correta
+
                 await this.db.query(
                     'INSERT INTO playlist_musica (cd_playlist, cd_musica, ordem) VALUES ($1, $2, $3)',
                     [cd_playlist, cd_musica, novaOrdem]
@@ -163,7 +161,6 @@ export class Server {
             const cd_usuario = req.params.cd_usuario;
 
             try {
-                // Obtém a playlist do usuário
                 const result = await this.db.query(
                     'SELECT cd_playlist FROM playlist WHERE cd_usuario = $1',
                     [cd_usuario]
@@ -175,7 +172,6 @@ export class Server {
 
                 const cd_playlist = result.rows[0].cd_playlist;
 
-                // Deleta todas as músicas da playlist
                 await this.db.query(
                     'DELETE FROM playlist_musica WHERE cd_playlist = $1',
                     [cd_playlist]

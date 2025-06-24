@@ -27,20 +27,19 @@ async function carregarDados(): Promise<void> {
                 : 'Erro desconhecido';
             throw new Error(erroMensagem);
         }
-        const faixas = dataFaixas as any[];
+        const faixas = dataFaixas;
         ulFaixas.innerHTML = '';
         if (faixas.length === 0) {
             const li = document.createElement('li');
             li.textContent = 'Nenhuma música encontrada';
             ulFaixas.appendChild(li);
-        }
-        else {
-            faixas.forEach(musica => {
+        } else {
+            faixas.forEach((musica: any) => {
                 const li = document.createElement('li');
                 li.textContent = musica.nome_musica + ' ';
                 const button = document.createElement('button');
                 button.type = 'button';
-                button.textContent = 'Selecionar';
+                button.textContent = 'add playlist';
                 button.addEventListener('click', async () => {
                     if (cdUsuario === null) {
                         alert('Usuário não identificado.');
@@ -50,8 +49,7 @@ async function carregarDados(): Promise<void> {
                     if (sucesso) {
                         alert('Música adicionada à playlist com sucesso!');
                         await carregarPlaylist(cdUsuario);
-                    }
-                    else {
+                    } else {
                         alert('Falha ao adicionar música.');
                     }
                 });
@@ -59,10 +57,10 @@ async function carregarDados(): Promise<void> {
                 ulFaixas.appendChild(li);
             });
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Erro ao buscar músicas:', error);
     }
+
     const ulAlbuns = document.querySelector('.recAlbuns') as HTMLUListElement | null;
     if (!ulAlbuns) {
         console.error('Elemento .recAlbuns não encontrado');
@@ -77,24 +75,23 @@ async function carregarDados(): Promise<void> {
                 : 'Erro desconhecido';
             throw new Error(erroMensagem);
         }
-        const albuns = dataAlbuns as any[];
+        const albuns = dataAlbuns;
         ulAlbuns.innerHTML = '';
         if (albuns.length === 0) {
             const li = document.createElement('li');
             li.textContent = 'Nenhum álbum encontrado';
             ulAlbuns.appendChild(li);
-        }
-        else {
-            albuns.forEach(album => {
+        } else {
+            albuns.forEach((album: any) => {
                 const li = document.createElement('li');
                 li.textContent = album.nm_album;
                 ulAlbuns.appendChild(li);
             });
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Erro ao buscar álbuns:', error);
     }
+
     const ulPerfis = document.querySelector('.recPerfis') as HTMLUListElement | null;
     if (!ulPerfis) {
         console.error('Elemento .recPerfis não encontrado');
@@ -109,34 +106,32 @@ async function carregarDados(): Promise<void> {
                 : 'Erro desconhecido';
             throw new Error(erroMensagem);
         }
-        const perfis = dataPerfis as any[];
+        const perfis = dataPerfis;
         ulPerfis.innerHTML = '';
         if (perfis.length === 0) {
             const li = document.createElement('li');
             li.textContent = 'Nenhum perfil encontrado';
             ulPerfis.appendChild(li);
-        }
-        else {
-            perfis.forEach(usuario => {
+        } else {
+            perfis.forEach((usuario: any) => {
                 const li = document.createElement('li');
                 li.textContent = usuario.nome_usuario;
                 ulPerfis.appendChild(li);
             });
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Erro ao buscar perfis:', error);
     }
 }
 
 let musicasPlaylist: any[] = [];
 let indiceAtual = 0;
+
 async function carregarPlaylist(cd_usuario: number): Promise<void> {
     const ulPlaylist = document.querySelector('.playlist') as HTMLUListElement | null;
     const player = document.getElementById('audioPlayer') as HTMLAudioElement | null;
     const titulo = document.getElementById('tituloMusica') as HTMLElement | null;
-    if (!ulPlaylist || !player || !titulo)
-        return;
+    if (!ulPlaylist || !player || !titulo) return;
     try {
         const response = await fetch(`/api/playlist/${cd_usuario}`);
         const dados = await response.json();
@@ -146,7 +141,7 @@ async function carregarPlaylist(cd_usuario: number): Promise<void> {
                 : 'Erro desconhecido';
             throw new Error(erroMensagem);
         }
-        const musicas = dados as any[];
+        const musicas = dados;
         musicasPlaylist = musicas;
         indiceAtual = 0;
         ulPlaylist.innerHTML = '';
@@ -154,15 +149,14 @@ async function carregarPlaylist(cd_usuario: number): Promise<void> {
             ulPlaylist.textContent = 'Playlist vazia';
             return;
         }
-        musicas.forEach((musica, index) => {
+        musicas.forEach((musica: any, index: number) => {
             const li = document.createElement('li');
             li.textContent = musica.nome_musica;
             li.style.cursor = 'pointer';
             li.addEventListener('click', () => tocarMusica(index));
             ulPlaylist.appendChild(li);
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Erro ao carregar playlist:', error);
     }
 }
@@ -183,8 +177,7 @@ async function adicionarMusicaPlaylist(cd_usuario: number, cd_musica: number): P
         }
         await carregarDados();
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Erro ao adicionar música:', error instanceof Error ? error.message : error);
         return false;
     }
@@ -193,22 +186,18 @@ async function adicionarMusicaPlaylist(cd_usuario: number, cd_musica: number): P
 const botaoLimpar = document.getElementById('btnLimparPlaylist') as HTMLButtonElement | null;
 botaoLimpar?.addEventListener('click', () => {
     setTimeout(async () => {
-        if (!botaoLimpar)
-            return;
+        if (!botaoLimpar) return;
         botaoLimpar.disabled = true;
         try {
             const res = await fetch(`/api/playlist/${cdUsuario}`, { method: 'DELETE' });
             const data = await res.json();
-            if (!res.ok)
-                throw new Error(data.error || 'Erro desconhecido');
+            if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
             alert('Playlist limpa com sucesso.');
             if (cdUsuario !== null)
                 await carregarPlaylist(cdUsuario);
-        }
-        catch (error) {
+        } catch (error) {
             alert('Erro: ' + (error instanceof Error ? error.message : 'Desconhecido'));
-        }
-        finally {
+        } finally {
             botaoLimpar.disabled = false;
         }
     }, 0);
@@ -225,21 +214,11 @@ function tocarMusica(index: number): void {
     const titulo = document.getElementById('tituloMusica') as HTMLElement | null;
     const albumCover = document.getElementById('albumCover') as HTMLImageElement | null;
     if (!player || !titulo || !albumCover) return;
-
     player.pause();
     player.src = musica.arquivo;
     player.load();
     titulo.textContent = musica.nome_musica;
-
-    if (musica.foto_album) {
-        // Se for URL:
-        albumCover.src = musica.foto_album;
-        // Se for base64, descomente a linha abaixo:
-        // albumCover.src = 'data:image/jpeg;base64,' + musica.foto_album;
-    } else {
-        console.warn('foto_album não está definida para esta música');
-        albumCover.src = 'caminho/para/imagem_padrao.jpg'; // opcional
-    }
+    albumCover.src = musica.foto_album || 'caminho/para/imagem_padrao.jpg';
     player.onloadedmetadata = () => {
         player.play().catch(err => console.error('Erro ao reproduzir música:', err));
     };
@@ -264,9 +243,8 @@ async function carregarPerfilUsuario(): Promise<void> {
             throw new Error(erroMensagem);
         }
         const ulPerfilUsuario = document.querySelector('.usuarioAtual') as HTMLUListElement | null;
-        const divImgUsuario = document.querySelector('.usuarioImg') as HTMLDivElement | null;
-        if (!ulPerfilUsuario || !divImgUsuario)
-            return;
+        const divImgUsuario = document.querySelector('.usuarioImg') as HTMLElement | null;
+        if (!ulPerfilUsuario || !divImgUsuario) return;
         ulPerfilUsuario.innerHTML = '';
         const li = document.createElement('li');
         li.textContent = usuario.nome_usuario;
@@ -278,8 +256,7 @@ async function carregarPerfilUsuario(): Promise<void> {
             img.alt = 'Foto do usuário';
             divImgUsuario.appendChild(img);
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Erro ao carregar perfil do usuário:', error instanceof Error ? error.message : error);
     }
 }
@@ -298,41 +275,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 const formSQL = document.getElementById('formSQL') as HTMLFormElement | null;
 formSQL?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const input = document.getElementById('sqlInput') as HTMLInputElement | null;
-    const resultadoDiv = document.querySelector('.resultBusca') as HTMLDivElement | null;
-
+    const resultadoDiv = document.querySelector('.resultBusca') as HTMLElement | null;
     if (!input || !resultadoDiv) return;
-
     const comandoSQL = input.value.trim();
-
     if (!comandoSQL) {
         resultadoDiv.textContent = 'Digite um comando SQL.';
         return;
     }
-
-    // Limpa conteúdo anterior e cria a <ul> para resultados
     resultadoDiv.innerHTML = '';
     const ul = document.createElement('ul');
     ul.className = 'resultado-lista';
     resultadoDiv.appendChild(ul);
-
     const viewsPermitidas = new Set([
         'vw_musicas_completo',
         'vw_musicas_mais_adicionadas',
         'vw_musicas_sem_album',
         'vw_top5_artistas',
     ]);
-
     const matchView = comandoSQL.match(/^SELECT\s+\*\s+FROM\s+(vw_\w+);?$/i);
     const nomeView = matchView?.[1];
-
     try {
-        let data;
+        let data: any;
         if (nomeView && viewsPermitidas.has(nomeView)) {
             const res = await fetch(`/api/view/${nomeView}`);
             data = await res.json();
-
             if (!res.ok) {
                 resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
                 return;
@@ -344,19 +311,16 @@ formSQL?.addEventListener('submit', async (e) => {
                 body: JSON.stringify({ query: comandoSQL }),
             });
             data = await res.json();
-
             if (!res.ok) {
                 resultadoDiv.textContent = `Erro: ${data?.error ?? 'Erro desconhecido.'}`;
                 return;
             }
         }
-
         if (Array.isArray(data)) {
             if (data.length > 0) {
                 data.forEach((item) => {
                     const li = document.createElement('li');
                     li.className = 'resultado-item';
-
                     const seenKeys = new Set();
                     li.innerHTML = Object.entries(item)
                         .filter(([key]) => {
@@ -366,10 +330,8 @@ formSQL?.addEventListener('submit', async (e) => {
                         })
                         .map(([key, value]) => `<strong>${key}:</strong> ${value ?? ''}`)
                         .join('<br>');
-
                     ul.appendChild(li);
                 });
-
                 if (typeof carregarDados === 'function') {
                     carregarDados();
                 }
