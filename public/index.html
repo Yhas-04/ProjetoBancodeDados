@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+
+<div class="main">
+
+<div class="perfil">
+    <div>
+        <div class="usuarioAtual"></div>
+        <div itemtype="img" class="usuarioImg" ></div>
+    </div>
+</div>
+
+<div class="pagina">
+    <div class="border">
+    <div>
+        <form id="formSQL">
+            <div class="inputBusca">
+                <input type="text" id="sqlInput" placeholder="Busca"></input>
+                <button type="submit" class="btBusca">Executar</button>
+            </div>
+        </form>
+    </div>
+    <div class="resultBusca">
+    </div>
+        <div class="players">
+            <div id="player" style="background:#222; padding:1rem; border-radius:1rem; width: 40vh; color:white;">
+                <img id="albumCover" src='images/arrow-27073_1280.webp' alt="Capa do álbum" style="width: 200px; border-radius: 1rem;" />
+                <div id="tituloMusica" style="font-weight:bold; margin-bottom: 1rem;">Nenhuma música selecionada</div>
+                <audio id="audioPlayer" style="width: 100%; border-radius: 1rem; background:#555;" controls></audio>
+            </div>
+            <section id="playlistSection">
+                <ul class="playlist"></ul>
+                <button type="button" id="btnLimparPlaylist">Limpar Playlist</button>
+            </section>
+        </div>
+        <h1 id="rec"> Recomendações: </h1>
+    <div class="recomendacoes">
+        <ul class="recAlbuns">
+
+        </ul>
+        <ul class="recFaixas">
+
+        </ul>
+        <ul class="recPerfis">
+
+        </ul>
+    </div>
+    </div>
+</div>
+</div>
+<script type="module" src="./Script.js"></script>
+</body>
+</html>

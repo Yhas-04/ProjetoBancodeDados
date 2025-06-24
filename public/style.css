@@ -1,0 +1,341 @@
+html, main {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    margin: 0; /* remove margens padrão */
+    overflow-x: hidden;
+}
+
+.main {
+    position: relative; /* Necessário para o ::after posicionar relativo ao .main */
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    background-image: url('images/bg5.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    box-sizing: border-box;
+    /* Importante: */
+    z-index: 1;
+    overflow: hidden; /* Garante overlay dentro */
+
+}
+.main > * {
+    position: relative;
+    z-index: 2;
+}
+.main::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.9); /* cor e transparência */
+    pointer-events: none;
+    z-index: 0; /* Overlay fica ATRÁS do conteúdo da .main */
+}
+
+.pagina{
+    padding-left: 45vh;
+}
+
+.perfil{
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #0e1e3e;
+    width: 45vh;
+    height: 100vh;
+}
+
+.usuarioAtual{
+    color: white;
+    margin: 22vh 5vh 5vh 13vh;
+    list-style-type: none;
+    font-family: "Helvetica", sans-serif;
+    font-size: 6vh;
+}
+
+.usuarioImg img{
+    display: flex;
+    margin: 5vh 5vh 5vh 6vh;
+    justify-content: center;
+    border-radius: 50%;
+    width: 30vh;
+    height: 30vh;
+    object-fit: cover;
+    border: 5px solid white;
+}
+
+.pagina{
+    margin-top: 10vh;
+    margin-left: -10vh;
+}
+
+.inputBusca{
+    border-radius: 1vh;
+    height: 10vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.inputBusca input{
+    font-size: 3vh;
+    margin-left: 20vh;
+    margin-top: 4vh;
+    color: black;
+    width: 90vh;
+    text-align: center;
+}
+.inputBusca button{
+    color: white;
+    margin-top: 4vh;
+    background-color: rgba(160, 34, 89, 0.5);
+    height: 6vh;
+
+}
+.resultBusca {
+    display: flex;
+    flex-direction: column;
+    margin-top: 4vh;
+    margin-left: 25vh;
+    border-radius: 1vh;
+    height: 35vh;
+    width: 130vh;
+    background-color: white;
+
+    border: 1vh solid #222222;
+
+    overflow: auto;              /* Permite rolagem caso o conteúdo ultrapasse os limites */
+    box-sizing: border-box;      /* Inclui padding e borda no cálculo de tamanho */
+    padding: 1vh;                /* Pequeno espaçamento interno */
+    word-wrap: break-word;       /* Quebra palavras longas */
+    white-space: normal;         /* Permite quebra de linha */
+}
+
+.resultBusca ul {
+    padding-left: 0;
+    margin: 0;
+    width: 100%;                 /* Faz a lista ocupar toda a largura do container */
+}
+
+.resultBusca li {
+    border: 0.5vh solid #222222;
+    list-style-type: none;
+    margin-bottom: 1vh;
+    word-wrap: break-word;       /* Quebra palavras longas */
+    white-space: normal;
+    max-width: 100%;             /* Não ultrapassa o container */
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1vh;
+    font-size: 3vh;
+}
+
+.players{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 5vh;
+    margin-left: 20vh;
+}
+
+#player{
+    border-radius: 2vh;
+    margin-left: 2vh;
+    border: 5px solid black;
+    height: 45vh;
+    width: 40vh;
+    background-color: white;
+}
+
+#audioPlayer {
+    margin-top: 3vh;
+    border-radius: 2vh;
+    width: 35vh;
+    background-color: #444;  /* cor mais escura e neutra */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* sombra para profundidade */
+    outline: none;
+}
+
+#tituloMusica{
+    display: flex;
+    justify-content: center;
+    margin-top: 2vh;
+    font-size: 3vh;
+}
+
+#albumCover{
+    margin-left: 9vh;
+    margin-top: 2vh;
+}
+
+#audioPlayer:focus {
+    outline: none;
+}
+
+.playlist{
+    margin-top: 3vh;
+    border-radius: 1vh;
+    margin-left: 2vh;
+    height: 40vh;
+    width: 70vh;
+    overflow-y: auto;
+    background-color: #222;
+    border: 4px solid #111;
+}
+
+.playlist li{
+    list-style-type: none;
+    background-color: aquamarine;
+    margin-top: 0.5vh;
+    margin-left: -3vh;
+    color: #e7e7e0;
+
+    border: 1px solid #a02259;
+    border-radius: 0.5vh;
+    font-size: 3.4vh;
+    font-family: "Century Ghotic", sans-serif;
+    background-color: rgba(160, 34, 89, 0.5);
+}
+
+#btnLimparPlaylist{
+    display: flex;
+    margin-left: 2vh;
+    font-size: 2vh;
+    color: black;
+    background-color: rgba(300, 90, 100, 0.5);
+}
+
+.result{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+#rec{
+    justify-content: center;
+    display: flex;
+    color: white;
+}
+
+.recFaixas button{
+    display: flow;
+    justify-content: end;
+    color: black;
+    background-color: rgba(300, 90, 100, 0.5);
+    }
+
+.recomendacoes{
+    margin-top: 4vh;
+    margin-left: 25vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.recAlbuns{
+    overflow-y: auto;
+    border-radius: 1.5vh;
+    height: 45vh;
+    width: 40vh;
+    background-color: #222;
+    border: 4px solid #111;
+}
+
+.recAlbuns li{
+    color: #e7e7e0;
+
+    border: 1px solid #a02259;
+    border-radius: 0.5vh;
+    list-style-type: none;
+    margin: 1vh 0 1vh -4vh;
+    font-size: 3.4vh;
+    font-family: "Century Ghotic", sans-serif;
+    background-color: rgba(160, 34, 89, 0.5);
+}
+
+.recAlbuns::-webkit-scrollbar {
+    width: 1vh;
+}
+
+.recAlbuns::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 0.5vh;
+}
+
+.recAlbuns::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 2vh;
+}
+
+.recPerfis {
+    overflow-y: auto;
+    border-radius: 1.5vh;
+    height: 45vh;
+    width: 40vh;
+    background-color: #222;
+    border: 4px solid black;
+}
+
+.recPerfis::-webkit-scrollbar {
+    width: 1vh;
+}
+
+.recPerfis::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 2vh;
+}
+
+.recPerfis::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 2vh;
+}
+
+.recPerfis li{
+    color: #e7e7e0;
+
+    border: 1px solid #a02259;
+    border-radius: 0.5vh;
+    list-style-type: none;
+    margin: 1vh 0 1vh -4vh;
+    font-size: 3.4vh;
+    font-family: "Century Ghotic", sans-serif;
+    background-color: rgba(160, 34, 89, 0.5);
+}
+.recFaixas{
+    overflow-y: auto;
+    border-radius: 1.5vh;
+    height: 45vh;
+    width: 40vh;
+    background-color: #222;
+    border: 4px solid black;
+}
+.recFaixas::-webkit-scrollbar {
+    width: 1vh;
+}
+
+.recFaixas::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 2vh;
+}
+
+.recFaixas::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 2vh;
+}
+
+.recFaixas li{
+    color: #e7e7e0;
+
+    border: 1px solid #a02259;
+    border-radius: 0.5vh;
+    list-style-type: none;
+    margin: 1vh 0 1vh -4vh;
+    font-size: 3.4vh;
+    font-family: "Century Ghotic", sans-serif;
+    background-color: rgba(160, 34, 89, 0.5);
+}
